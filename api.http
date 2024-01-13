@@ -1,0 +1,68 @@
+@hostname = localhost
+@port = 8080
+@baseUrl = http://{{hostname}}:{{port}}
+@contentType = application/json
+
+### POST /users
+# @name createuser
+POST {{baseUrl}}/users HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+    "name": "John Doe",
+    "email": "johndoe@email.com",
+    "password": "123456"
+}
+
+### POST /users/login
+# @name login
+POST {{baseUrl}}/users/login HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+    "email": "johndoe@email.com",
+    "password": "123456"
+}
+
+@authToken = {{login.response.body.access_token}}
+
+### POST /products
+# @name createproduct
+POST {{baseUrl}}/products HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+    "name": "Product 1",
+    "price": 100
+}
+
+### GET /products
+# @name getproducts
+GET {{baseUrl}}/products HTTP/1.1
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+@productId = {{getproducts.response.body.$[0].id}}
+
+### GET /products/{id}
+# @name get-product
+GET {{baseUrl}}/products/{{productId}} HTTP/1.1
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+### PUT /products
+# @name updateproduct
+PUT {{baseUrl}}/products/{{productId}} HTTP/1.1
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+    "name": "Product 1 Updated",
+    "price": 150
+}
+
+### DELETE /products
+# @name deleteproduct
+DELETE {{baseUrl}}/products/{{productId}} HTTP/1.1
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
